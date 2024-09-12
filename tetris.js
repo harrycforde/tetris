@@ -3,4 +3,4 @@ const context = canvas.getContext('2d')
 
 const scale = 20
 
-
+console.log('hello')
