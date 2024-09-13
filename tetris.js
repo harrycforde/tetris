@@ -5,15 +5,35 @@ const scoree = document.getElementById('score')
 const scale = 40
 const columns = canvas.width / scale
 const rows = canvas.height / scale
-const dropInterval = 1000
-const colors = ['blue', 'red', 'green', 'yellow', 'purple']
+const colors = ['#0000ff', '#a10000', 'green', '#e0e000', '#97009f']
+const lightColors = ['#0062ff', '#ff0000', '#00e022', '#ffff00', '#ee00fa']
 
 let board
 let currentPiece
+let score = 0
 let lastDropTime = 0
+let dropInterval = 1000
 let isGamePlaying = false
 let isGameOver = false
-let score = 0
+
+function playSound(sound = 'sawtooth', frequency = 400) {
+  const audioContext = new AudioContext()
+  const oscillator = audioContext.createOscillator()
+  const gain = audioContext.createGain()
+
+  oscillator.type = sound
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime)
+  oscillator.frequency.linearRampToValueAtTime(500, audioContext.currentTime + 0.05)
+
+  gain.gain.setValueAtTime(1, audioContext.currentTime)
+  gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.1)
+
+  oscillator.connect(gain)
+  gain.connect(audioContext.destination)
+
+  oscillator.start()
+  oscillator.stop(audioContext.currentTime + 0.1)
+}
 
 function createPiece() {
   const color = Math.floor(Math.random() * colors.length) + 1
@@ -37,6 +57,14 @@ function createPiece() {
       [0, color],
       [0, color],
       [color, color],
+    ],
+    [
+      [0, color, color],
+      [color, color, 0],
+    ],
+    [
+      [color, color, 0],
+      [0, color, color],
     ],
   ]
 
@@ -78,30 +106,21 @@ function movePiece(direction) {
     return
   }
 
+  let sound = 'sawtooth'
+  let frequency = 200
+
+  if (direction === 'slam') {
+    frequency = 100
+    while (!checkCollision(0, 1)) {
+      currentPiece.y++
+    }
+  }
+
   currentPiece.y++
 
-  const hasCollision = currentPiece.shape.some((row, y) => {
-    return row.some((value, x) => {
-      if (value) {
-        let boardY = y + currentPiece.y
-        let boardX = x + currentPiece.x
-        return (
-          boardY >= rows ||
-          boardX < 0 ||
-          boardX >= columns ||
-          (boardY >= 0 && board[boardY][boardX])
-        )
-      }
-      return false
-    })
-  })
-
-  if (!hasCollision) return
+  if (!checkCollision()) return
 
   currentPiece.y--
-
-  let sound = 'sawtooth'
-  let frequency = 400
 
   currentPiece.shape.forEach((row, y) => {
     row.forEach((value, x) => {
@@ -117,7 +136,7 @@ function movePiece(direction) {
       score++
       scoree.innerHTML = score
       sound = 'square'
-      frequency = 500
+      frequency = 700
     }
   })
 
@@ -144,19 +163,17 @@ function rotatePiece() {
   }
 }
 
-function slamPiece() {
-  while (!checkCollision(0, 1)) {
-    currentPiece.y++
-  }
-  movePiece('down')
-}
-
 function gameLoop(timestamp) {
   if (checkCollision(0, 0)) {
     isGameOver = true
     isGamePlaying = false
-    alert('Game Over')
-    document.getElementById('startButton').innerHTML = 'Start'
+    playSound('sine', 20)
+    context.fillStyle = 'white'
+    context.font = '30px monospace'
+    context.textAlign = 'center'
+    context.textBaseline = 'middle'
+    context.fillText('game over 🫡', canvas.width / 2, canvas.height / 2)
+    document.getElementById('startButton').innerHTML = 'start'
   }
 
   if (!isGamePlaying || isGameOver) return
@@ -166,6 +183,7 @@ function gameLoop(timestamp) {
   if (timestamp - lastDropTime > dropInterval) {
     movePiece('down')
     lastDropTime = timestamp
+    dropInterval -= 5
   }
 
   for (let y = 0; y < rows; y++) {
@@ -173,7 +191,7 @@ function gameLoop(timestamp) {
       if (board[y][x]) {
         context.fillStyle = colors[board[y][x] - 1]
         context.fillRect(x * scale, y * scale, scale, scale)
-        context.strokeStyle = '#fefefe'
+        context.strokeStyle = lightColors[board[y][x] - 1]
         context.strokeRect(x * scale, y * scale, scale, scale)
       }
     }
@@ -186,12 +204,13 @@ function gameLoop(timestamp) {
       const drawX = currentPiece.x + x
       const drawY = currentPiece.y + y
       context.fillStyle = colors[value - 1]
-      // context.fillStyle = 'pink'
       context.fillRect(drawX * scale, drawY * scale, scale, scale)
-      context.strokeStyle = '#fefefe'
+      context.strokeStyle = lightColors[value - 1]
       context.strokeRect(drawX * scale, drawY * scale, scale, scale)
     })
   })
+
+  console.log(dropInterval)
 
   requestAnimationFrame(gameLoop)
 }
@@ -228,6 +247,12 @@ document.getElementById('startButton').addEventListener('click', startGame)
 document.getElementById('resetButton').addEventListener('click', resetGame)
 
 document.addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    startGame()
+  }
+
+  if (!isGamePlaying || isGameOver) return
+
   if (event.key === 'ArrowLeft' || event.key === 'h') {
     movePiece('left')
   } else if (event.key === 'ArrowRight' || event.key === 'l') {
@@ -237,21 +262,8 @@ document.addEventListener('keydown', function (event) {
   } else if (event.key === 'ArrowUp' || event.key === 'j') {
     rotatePiece()
   } else if (event.key === ' ') {
-    slamPiece()
-  } else if (event.key === 'Enter') {
-    startGame()
+    movePiece('slam')
   } else if (event.key === 'r') {
     resetGame()
   }
 })
-
-function playSound(sound = 'sawtooth', frequency = 400) {
-  const audioContext = new AudioContext()
-  const oscillator = audioContext.createOscillator()
-  oscillator.type = sound
-  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime)
-  oscillator.connect(audioContext.destination)
-
-  oscillator.start()
-  oscillator.stop(audioContext.currentTime + 0.1)
-}

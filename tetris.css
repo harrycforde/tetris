@@ -1,43 +1,33 @@
+* {
+	font-family: inherit;
+	box-sizing: border-box;
+}
+
 body {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
 	height: 100vh;
 	margin: 0;
-}
-
-.container {
-	width: 100%;
-	display: flex;
-	margin-bottom: 15px;
-	justify-content: center;
-	gap: 20px;
-}
-
-.test-container {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+	background-color: black;
+	font-family: monospace;
 }
 
 canvas {
-	width: 50%;
-	border: 1px solid #cecece;
-	border-radius: 10px;
+	height: calc(100vh - 60px);
 	display: block;
-	background-color: black;
+	background-color: #000000;
+	aspect-ratio: 4/10;
+	margin: 0 auto;
 }
 
-.buttons {
+.controls {
+	height: 60px;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 10px;
 }
 
 button {
 	display: block;
-	margin: 0 auto;
 	border-radius: 100px;
 	border: none;
 	padding: 10px 15px;
