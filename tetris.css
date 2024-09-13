@@ -1,0 +1,54 @@
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.container {
+	width: 100%;
+	display: flex;
+	margin-bottom: 15px;
+	justify-content: center;
+	gap: 20px;
+}
+
+.test-container {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+canvas {
+	width: 50%;
+	border: 1px solid #cecece;
+	border-radius: 10px;
+	display: block;
+	background-color: black;
+}
+
+.buttons {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+button {
+	display: block;
+	margin: 0 auto;
+	border-radius: 100px;
+	border: none;
+	padding: 10px 15px;
+	cursor: pointer;
+}
+
+#score {
+	background-color: #7f7f7f;
+	padding: 10px 15px;
+	border-radius: 200px;
+	font-size: 15px;
+	display: flex;
+	align-items: center;
+}

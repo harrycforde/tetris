@@ -1,3 +1,20 @@
 <!DOCTYPE html>
-<title>tetris</title>
-<script src="src/index.js" type="module"></script>
+<head>
+  <title>tetris</title>
+  <link rel="stylesheet" type="text/css" href="tetris.css" />
+</head>
+<body>
+  <div class="container">
+    <canvas width="520" height="800" id="tetrisCanvas"></canvas>
+    <div class="test-container">
+      <div id="testBoard"></div>
+      <div id="testPiece"></div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button type="button" id="startButton">start</button>
+    <button type="button" id="resetButton">reset</button>
+    <div id="score">0</div>
+  </div>
+</body>
+<script src="tetris.js"></script>
