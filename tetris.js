@@ -60,35 +60,69 @@ function playSound(sound = 'sawtooth', frequency = 400) {
 }
 
 function createPiece() {
-  const color = Math.floor(Math.random() * emojis.length) + 1
+  const emoji = Math.floor(Math.random() * emojis.length) + 1
 
   const pieces = [
     [
-      [color, color],
-      [color, color],
+      [emoji, emoji],
+      [emoji, emoji],
     ],
-    [[color], [color], [color], [color]],
+    [[emoji], [emoji], [emoji], [emoji]],
+    [[emoji], [emoji], [emoji], [emoji], [emoji], [emoji]],
     [
-      [color, 0],
-      [color, 0],
-      [color, color],
-    ],
-    [
-      [color, color, color],
-      [0, 0, color],
+      [emoji, 0],
+      [emoji, 0],
+      [emoji, emoji],
     ],
     [
-      [0, color],
-      [0, color],
-      [color, color],
+      [emoji, emoji, emoji],
+      [0, 0, emoji],
     ],
     [
-      [0, color, color],
-      [color, color, 0],
+      [0, emoji],
+      [0, emoji],
+      [emoji, emoji],
     ],
     [
-      [color, color, 0],
-      [0, color, color],
+      [0, emoji, emoji],
+      [emoji, emoji, 0],
+    ],
+    [
+      [emoji, emoji, 0],
+      [0, emoji, emoji],
+    ],
+    [
+      [0, 0, emoji, 0, emoji, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, emoji, 0, 0, 0, emoji, 0],
+      [0, 0, emoji, emoji, emoji, 0, 0],
+    ],
+    [[emoji, 0, 0, 0, 0, 0, emoji]],
+    [[emoji]],
+    [[emoji]],
+    [[emoji]],
+    [[emoji, emoji]],
+    [
+      [0, emoji],
+      [emoji, 0],
+    ],
+    [
+      [0, emoji, 0],
+      [emoji, 0, emoji],
+    ],
+    [
+      [0, 0, emoji, 0, 0],
+      [0, 0, emoji, 0, 0],
+      [0, 0, emoji, 0, 0],
+      [0, 0, emoji, 0, 0],
+      [emoji, emoji, emoji, emoji, emoji],
+      [emoji, emoji, 0, emoji, emoji],
+    ],
+    [
+      [emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji],
+      [emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji],
+      [emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji, emoji],
     ],
   ]
 
@@ -269,9 +303,8 @@ document.addEventListener('keydown', function (event) {
       movePiece('down')
       downKeyInterval = setInterval(() => {
         movePiece('down')
-      }, 100)
+      }, 75)
     }
-    movePiece('down')
   } else if (event.key === 'ArrowUp' || event.key === 'j') {
     rotatePiece()
   } else if (event.key === ' ') {
