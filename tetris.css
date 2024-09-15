@@ -26,12 +26,16 @@ canvas {
 	gap: 10px;
 }
 
-button {
+.button {
 	display: block;
 	border-radius: 100px;
 	border: none;
 	padding: 10px 15px;
 	cursor: pointer;
+	background-color: white;
+	&:hover {
+		background-color: #e3e3e3;
+	}
 }
 
 #score {
@@ -42,4 +46,3 @@ button {
 	display: flex;
 	align-items: center;
 }
-

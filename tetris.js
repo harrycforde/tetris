@@ -15,6 +15,7 @@ let lastDropTime = 0
 let dropInterval = 1000
 let isGamePlaying = false
 let isGameOver = false
+let soundVolume = 1
 
 function playSound(sound = 'sawtooth', frequency = 400) {
   const audioContext = new AudioContext()
@@ -25,7 +26,7 @@ function playSound(sound = 'sawtooth', frequency = 400) {
   oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime)
   oscillator.frequency.linearRampToValueAtTime(500, audioContext.currentTime + 0.05)
 
-  gain.gain.setValueAtTime(1, audioContext.currentTime)
+  gain.gain.setValueAtTime(soundVolume, audioContext.currentTime)
   gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.1)
 
   oscillator.connect(gain)
@@ -183,7 +184,7 @@ function gameLoop(timestamp) {
   if (timestamp - lastDropTime > dropInterval) {
     movePiece('down')
     lastDropTime = timestamp
-    dropInterval -= 5
+    dropInterval -= 2
   }
 
   for (let y = 0; y < rows; y++) {
@@ -243,8 +244,20 @@ function startGame() {
   requestAnimationFrame(gameLoop)
 }
 
+function toggleMute() {
+	if (soundVolume) {
+		soundVolume = 0
+		document.getElementById('muteButton').innerHTML = 'unmute'
+		return
+	}
+
+	soundVolume = 1
+	document.getElementById('muteButton').innerHTML = 'mute'
+}
+
 document.getElementById('startButton').addEventListener('click', startGame)
 document.getElementById('resetButton').addEventListener('click', resetGame)
+document.getElementById('muteButton').addEventListener('click', toggleMute)
 
 document.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
@@ -265,5 +278,7 @@ document.addEventListener('keydown', function (event) {
     movePiece('slam')
   } else if (event.key === 'r') {
     resetGame()
-  }
+  } else if (event.key === 'm') {
+		toggleMute()
+	}
 })
