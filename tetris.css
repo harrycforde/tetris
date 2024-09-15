@@ -14,32 +14,16 @@ canvas {
 	height: calc(100vh - 60px);
 	display: block;
 	background-color: #000000;
-	aspect-ratio: 4/10;
-	margin: 0 auto;
-}
-
-.controls {
-	height: 60px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-}
-
-.button {
-	display: block;
-	border-radius: 100px;
-	border: none;
-	padding: 10px 15px;
-	cursor: pointer;
-	background-color: white;
-	&:hover {
-		background-color: #e3e3e3;
-	}
+	aspect-ratio: 6/10;
+	margin: 0 auto 10px;
 }
 
 #score {
-	background-color: #7f7f7f;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto 10px;
+	display: block;
+	background-color: white;
 	padding: 10px 15px;
 	border-radius: 200px;
 	font-size: 15px;

@@ -5,8 +5,31 @@ const scoree = document.getElementById('score')
 const scale = 40
 const columns = canvas.width / scale
 const rows = canvas.height / scale
-const colors = ['#0000ff', '#a10000', 'green', '#e0e000', '#97009f']
-const lightColors = ['#0062ff', '#ff0000', '#00e022', '#ffff00', '#ee00fa']
+const emojis = [
+  '💩',
+  '🤪',
+  '😂',
+  '🤦‍♂️',
+  '🤨',
+  '🗑️',
+  '🫠',
+  '🫥',
+  '💀',
+  '🫦',
+  '🌈',
+  '🌚',
+  '🔫',
+  '🫡',
+  '☹️',
+  '☺️',
+  '🥶',
+  '🥵',
+  '🖕',
+  '💅',
+  '🫃',
+  '👨‍❤️‍👨',
+  '🦀',
+]
 
 let board
 let currentPiece
@@ -37,7 +60,7 @@ function playSound(sound = 'sawtooth', frequency = 400) {
 }
 
 function createPiece() {
-  const color = Math.floor(Math.random() * colors.length) + 1
+  const color = Math.floor(Math.random() * emojis.length) + 1
 
   const pieces = [
     [
@@ -131,7 +154,7 @@ function movePiece(direction) {
   })
 
   board.forEach((row, y) => {
-    if (row.every(value => value === row[0] && value !== 0)) {
+    if (row.every(value => value)) {
       board.splice(y, 1)
       board.unshift(Array(columns).fill(0))
       score++
@@ -169,12 +192,15 @@ function gameLoop(timestamp) {
     isGameOver = true
     isGamePlaying = false
     playSound('sine', 20)
+    context.fillStyle = '#0e0e0e'
+    context.fillRect(canvas.width / 2 - 160, canvas.height / 2 - 40, 320, 120)
     context.fillStyle = 'white'
     context.font = '30px monospace'
     context.textAlign = 'center'
     context.textBaseline = 'middle'
-    context.fillText('game over 🫡', canvas.width / 2, canvas.height / 2)
-    document.getElementById('startButton').innerHTML = 'start'
+    context.fillText('game over 😭', canvas.width / 2, canvas.height / 2)
+    context.font = '20px monospace'
+    context.fillText('press enter to restart', canvas.width / 2, canvas.height / 2 + 40)
   }
 
   if (!isGamePlaying || isGameOver) return
@@ -182,18 +208,16 @@ function gameLoop(timestamp) {
   context.clearRect(0, 0, canvas.width, canvas.height)
 
   if (timestamp - lastDropTime > dropInterval) {
-    movePiece('down')
+    if (!downKeyPressed) movePiece('down')
     lastDropTime = timestamp
-    dropInterval -= 2
+    dropInterval -= 1
   }
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < columns; x++) {
       if (board[y][x]) {
-        context.fillStyle = colors[board[y][x] - 1]
-        context.fillRect(x * scale, y * scale, scale, scale)
-        context.strokeStyle = lightColors[board[y][x] - 1]
-        context.strokeRect(x * scale, y * scale, scale, scale)
+        context.font = '40px monospace'
+        context.fillText(emojis[board[y][x] - 1], x * scale + scale / 2, y * scale + 2 + scale / 2)
       }
     }
   }
@@ -201,67 +225,36 @@ function gameLoop(timestamp) {
   currentPiece.shape.forEach((row, y) => {
     row.forEach((value, x) => {
       if (!value) return
-
       const drawX = currentPiece.x + x
       const drawY = currentPiece.y + y
-      context.fillStyle = colors[value - 1]
-      context.fillRect(drawX * scale, drawY * scale, scale, scale)
-      context.strokeStyle = lightColors[value - 1]
-      context.strokeRect(drawX * scale, drawY * scale, scale, scale)
+      context.font = '40px monospace'
+      context.fillText(emojis[value - 1], drawX * scale + scale / 2, drawY * scale + 2 + scale / 2)
     })
   })
 
-  console.log(dropInterval)
-
-  requestAnimationFrame(gameLoop)
-}
-
-function resetGame() {
-  this.blur()
-
-  isGameOver = false
-  score = 0
-  lastDropTime = 0
-  board = Array.from({ length: rows }, () => Array(columns).fill(0))
-  currentPiece = createPiece()
   requestAnimationFrame(gameLoop)
 }
 
 function startGame() {
-  this.blur()
-
-  if (isGamePlaying) {
-    this.innerHTML = 'start'
-    isGamePlaying = false
-    return
-  }
-
   isGamePlaying = true
-  this.innerHTML = 'stop'
-
-  if (!board || isGameOver) resetGame()
-
+  isGameOver = false
+  score = 0
+  lastDropTime = 0
+  dropInterval = 1000
+  board = Array.from({ length: rows }, () => Array(columns).fill(0))
+  currentPiece = createPiece()
+  this.innerHTML = 'restart'
   requestAnimationFrame(gameLoop)
 }
 
 function toggleMute() {
-	if (soundVolume) {
-		soundVolume = 0
-		document.getElementById('muteButton').innerHTML = 'unmute'
-		return
-	}
-
-	soundVolume = 1
-	document.getElementById('muteButton').innerHTML = 'mute'
+  soundVolume = soundVolume ? 0 : 1
 }
 
-document.getElementById('startButton').addEventListener('click', startGame)
-document.getElementById('resetButton').addEventListener('click', resetGame)
-document.getElementById('muteButton').addEventListener('click', toggleMute)
-
 document.addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' && !isGamePlaying) {
     startGame()
+    return
   }
 
   if (!isGamePlaying || isGameOver) return
@@ -271,14 +264,44 @@ document.addEventListener('keydown', function (event) {
   } else if (event.key === 'ArrowRight' || event.key === 'l') {
     movePiece('right')
   } else if (event.key === 'ArrowDown' || event.key === 'k') {
+    if (!downKeyPressed) {
+      downKeyPressed = true
+      movePiece('down')
+      downKeyInterval = setInterval(() => {
+        movePiece('down')
+      }, 100)
+    }
     movePiece('down')
   } else if (event.key === 'ArrowUp' || event.key === 'j') {
     rotatePiece()
   } else if (event.key === ' ') {
     movePiece('slam')
-  } else if (event.key === 'r') {
-    resetGame()
   } else if (event.key === 'm') {
-		toggleMute()
-	}
+    toggleMute()
+  }
+})
+
+let downKeyPressed = false
+let downKeyInterval = null
+
+document.addEventListener('DOMContentLoaded', function () {
+  context.fillStyle = 'white'
+  context.textAlign = 'center'
+  context.textBaseline = 'middle'
+  context.font = '30px monospace'
+  context.fillText('trash tetris 🚮', canvas.width / 2, canvas.height / 2 - 50)
+  context.font = '20px monospace'
+  context.fillText('press enter to start', canvas.width / 2, canvas.height / 2)
+  context.font = '20px monospace'
+  context.fillText('m to mute', canvas.width / 2, canvas.height / 2 + 35)
+})
+
+document.addEventListener('keyup', function (event) {
+  if (event.key === 'ArrowDown' || event.key === 'k') {
+    downKeyPressed = false
+    if (downKeyInterval) {
+      clearInterval(downKeyInterval)
+      downKeyInterval = null
+    }
+  }
 })
