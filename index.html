@@ -12,7 +12,10 @@
 <script>
   let events = []
 
+  console.log('yeah')
+
   rrweb.record({
+    canvas: true,
     emit(event) {
       events.push(event)
 
