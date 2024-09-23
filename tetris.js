@@ -1,4 +1,4 @@
-console.log('you bettah walk around like daft punk')
+console.log('we dont wanna hear you say _____ no more')
 
 const canvas = document.getElementById('tetrisCanvas')
 const context = canvas.getContext('2d')
