@@ -37,7 +37,7 @@
         localStorage.setItem('replayRecordingId', recordingId)
       }
 
-      if (events.length < 100) return
+      if (events.length < 20) return
       sendEvents(events)
       events = []
     },
