@@ -1,3 +1,5 @@
+console.log('you bettah walk around like daft punk')
+
 const canvas = document.getElementById('tetrisCanvas')
 const context = canvas.getContext('2d')
 const scoree = document.getElementById('score')
@@ -188,7 +190,7 @@ function movePiece(direction) {
   })
 
   board.forEach((row, y) => {
-    if (row.every(value => value)) {
+    if (row.every((value) => value)) {
       board.splice(y, 1)
       board.unshift(Array(columns).fill(0))
       score++
@@ -206,10 +208,10 @@ function rotatePiece() {
   const oldShape = currentPiece.shape
 
   const transposedShape = currentPiece.shape[0].map((_, colIndex) => {
-    return currentPiece.shape.map(row => row[colIndex])
+    return currentPiece.shape.map((row) => row[colIndex])
   })
 
-  const rotatedShape = transposedShape.map(row => row.reverse())
+  const rotatedShape = transposedShape.map((row) => row.reverse())
   currentPiece.shape = rotatedShape
 
   if (currentPiece.x + currentPiece.shape[0].length > columns) {
