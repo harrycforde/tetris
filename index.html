@@ -12,15 +12,13 @@
 <script>
   let events = []
 
-  console.log('yeah')
-
   rrweb.record({
-    canvas: true,
+    recordCanvas: true,
     emit(event) {
       events.push(event)
 
       async function sendEvents(events) {
-        const response = await fetch('https://war-room.h4.ninja/api/recordings', {
+        const response = await fetch('http://localhost:5173/api/recordings', {
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
@@ -28,6 +26,7 @@
             projectId: '339a0ec2-06fd-4922-91b1-d40db1b9f8bd',
             recordingId: localStorage.getItem('replayRecordingId'),
             events,
+            hasCanvas: true,
           }),
         })
 
