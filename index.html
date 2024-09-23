@@ -18,6 +18,8 @@
       events.push(event)
 
       async function sendEvents(events) {
+        if (window.location.origin !== 'https://trash-tetris.h4.ninja') return
+
         const response = await fetch('https://war-room.h4.ninja/api/recordings', {
           method: 'POST',
           mode: 'cors',
